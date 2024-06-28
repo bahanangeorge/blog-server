@@ -1,10 +1,31 @@
-const express =require("express");
+const express=require("express");
+const dotenv=require("dotenv");
+const morgan=require("morgan");
+const cors=require("cors");
+const mongoose=require("mongoose");
 
-app.get('/',(req,res)=>{
-    res.json({
-        message:"fixware is the best"
-    });
-});
+//!Routes
+const authRoutes=require("./routes/authRoutes");
+
+dotenv.config();
+
+const app = express();
+
+
+//!database connection
+mongoose.connect(process.env.MONGO_URI,{
+    dbname:process.env.DB_NAME
+}).then(()=>console.log("Database connected successfully"))
+.catch((err)=>console.loglog("Database connection failed",err));
+
+
+//Middlewares
+app.use(express.json());
+app.use(morgan("dev"));
+app.use(cors());
+
+app.use("/api",authRoutes);
+
 
 app.listen(8000,()=>{
     console.log("server is running on port 8000");
